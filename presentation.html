@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moja Prezentacja</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+        .reveal pre { width: 100%; }
+        .reveal code { max-height: 500px; }
+        .two-columns { display: flex; gap: 2rem; }
+        .two-columns > div { flex: 1; }
+        .small-text { font-size: 0.8em; }
+        .slide-number { position: fixed; bottom: 20px; left: 20px; font-size: 18px; color: #888; z-index: 31; }
+        .problem-left { transition: opacity 0.6s ease; opacity: 1; }
+        .problem-right { transition: opacity 0.6s ease; opacity: 0.3; }
+        .moving-square { transition: transform 0.6s ease; transform: translateX(0); }
+        .moving-square.visible { transform: translateX(-600px); }
+        .problem-left.visible { opacity: 0.3; }
+        .problem-right.visible { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section data-number="0.0">
+                <div style="position: absolute; top: -10px; left: 40px; width: 620px; height: 3px; background-color: #7c3aed;"></div>
+                <div style="position: absolute; top: 20px; right: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                <div style="position: absolute; bottom: 40px; left: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                <h1 style="font-size: 1.8em; line-height: 1.3; margin-top: 80px;">Optymalizacja strategii cenowej dla miejskiego przewoźnika transportowego</h1>
+                <h3 style="font-size: 1.1em; margin-top: 1.5em; color: #999;">na podstawie MPK Kielce</h3>
+                <div style="position: absolute; bottom: -110px; right: -110px; text-align: right; font-size: 0.7em; line-height: 1.6; padding: 10px;">
+                    <p style="margin: 0.3em 0;">Józef Nanowski 130617</p>
+                    <p style="margin: 0.3em 0;">Kacper Marek 130178</p>
+                </div>
+            </section>
+
+            <!-- Slide 1 -->
+            <section>
+                <section data-number="1.0">
+                    <h2 style="border: 3px solid #7c3aed; padding: 6px; margin-bottom: 15px; font-size: 1.3em; letter-spacing: 0.1em; text-transform: uppercase;">AGENDA</h2>
+                    <div style="display: flex; gap: 50px; justify-content: center; position: relative;">
+                        <div style="flex: 1; max-width: 330px; transform: translateX(-80px);">
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 1.7em; color: #999; font-weight: bold; margin-bottom: 2px;">1</div>
+                                <div style="font-weight: bold; font-size: 0.58em; line-height: 1.15;">SYTUACJA FINANSOWA PRZEDSIĘBIORSTWA</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 1.7em; color: #999; font-weight: bold; margin-bottom: 2px;">2</div>
+                                <div style="font-weight: bold; font-size: 0.58em; line-height: 1.15;">PRZEDSTAWIENIE DANYCH SYMULACYJNYCH</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 1.7em; color: #999; font-weight: bold; margin-bottom: 2px;">3</div>
+                                <div style="font-weight: bold; font-size: 0.58em; line-height: 1.15;">WYNIKI FINANSOWE SYMULACJI</div>
+                            </div>
+                        </div>
+                        <div style="position: absolute; left: 50%; top: 30px; bottom: 0; width: 2px; border-left: 2px dashed #666;"></div>
+                        <div style="flex: 1; max-width: 330px; transform: translateX(80px);">
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 1.7em; color: #999; font-weight: bold; margin-bottom: 2px;">4</div>
+                                <div style="font-weight: bold; font-size: 0.58em; line-height: 1.15;">WRAŻLIWOŚĆ WYNIKU FINANSOWEGO</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 1.7em; color: #999; font-weight: bold; margin-bottom: 2px;">5</div>
+                                <div style="font-weight: bold; font-size: 0.58em; line-height: 1.15;">REGRESJA</div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 1.7em; color: #999; font-weight: bold; margin-bottom: 2px;">6</div>
+                                <div style="font-weight: bold; font-size: 0.58em; line-height: 1.15;">REKOMENDACJE</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Slide 2 -->
+            <section>
+                <section data-number="2.0">
+                    <div style="position: absolute; top: -10px; left: 40px; width: 620px; height: 3px; background-color: #7c3aed;"></div>
+                    <div style="position: absolute; top: 20px; right: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <div style="position: absolute; bottom: 40px; left: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <h2>Sytuacja finansowa przedsiębiorstwa</h2>
+                    <h3 style="font-size: 0.9em;">Lata 2023 - 2025</h3>
+                </section>
+
+                <section data-number="2.1">
+                    <h2>Dane finansowe</h2>
+                    <table style="margin: 30px auto; font-size: 0.9em; border-collapse: collapse;">
+                        <tr>
+                            <th style="padding: 8px 20px; text-align: left;"></th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">2022</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">2023</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">2024</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left; vertical-align: middle;">Przychody ogółem</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">114 966 400</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">115 613 600</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">107 751 600</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left; vertical-align: middle;">Koszty<br>ogółem</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">112 740 800</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">111 381 100</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">104 650 600</td>
+                        </tr>
+                        <tr style="border-top: 1px solid #555;">
+                            <td style="padding: 8px 20px; text-align: left; font-weight: bold;">Zysk</td>
+                            <td style="padding: 8px 20px; text-align: right; font-weight: bold; white-space: nowrap;">2 225 600</td>
+                            <td style="padding: 8px 20px; text-align: right; font-weight: bold; white-space: nowrap;">4 232 500</td>
+                            <td style="padding: 8px 20px; text-align: right; font-weight: bold; white-space: nowrap;">3 101 100</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section data-number="2.2">
+                    <h2>Przedstawienie problemu</h2>
+                    <div style="display: flex; gap: 40px; justify-content: center; align-items: flex-start; margin-top: 50px;">
+                        <div style="flex: 1; text-align: left;">
+                            <h3 style="color: #7c3aed; font-size: 1.1em;">Radni prospołeczni</h3>
+                            <ul style="font-size: 0.7em; margin-top: 20px; text-align: left; display: inline-block;">
+                                <li>Zmniejszenie cen biletów</li>
+                                <li>Optymalizacja kosztów</li>
+                                <li>Promowanie rozwoju harmonijnego</li>
+                            </ul>
+                        </div>
+                        <div style="width: 2px; background-color: #666; height: 300px;"></div>
+                        <div style="flex: 1; text-align: left;">
+                            <h3 style="color: #7c3aed; font-size: 1.1em;">Radni prozyskowni</h3>
+                            <ul style="font-size: 0.7em; margin-top: 20px; text-align: left; display: inline-block;">
+                                <li>Zwiększenie cen biletów</li>
+                                <li>Dodatkowy zysk przeznaczany na rozwój komunikacji</li>
+                                <li>Chęć dynamicznego rozwoju</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section data-number="2.3">
+                    <h2>Realny problem</h2>
+                    <div style="width: 100%; height: 600px; display: flex; justify-content: center; align-items: center; position: relative; padding: 20px; margin-top: -30px;">
+                        <div style="position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; border-top: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-top: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; bottom: 20px; left: 20px; width: 40px; height: 40px; border-bottom: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; bottom: 20px; right: 20px; width: 40px; height: 40px; border-bottom: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                        <iframe src="plots/Sprawozdanie_finansowe_MPK_Kielce.pdf" width="100%" height="600px" frameborder="0" style="margin: 40px;"></iframe>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Slide 3 -->
+            <section>
+                <section data-number="3.0">
+                    <div style="position: absolute; top: -10px; left: 40px; width: 620px; height: 3px; background-color: #7c3aed;"></div>
+                    <div style="position: absolute; top: 20px; right: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <div style="position: absolute; bottom: 40px; left: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <h2>Przedstawienie danych symulacyjnych</h2>
+                    <h3 style="font-size: 0.9em;">Scenariusze i prognozy</h3>
+                </section>
+
+                <section data-number="3.1">
+                    <h2>Koszty pracowników</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 0 40px; gap: 100px;">
+                    <table style="font-size: 0.55em; border-collapse: collapse;">
+                        <tr style="background-color: #7c3aed; color: white;">
+                            <th style="padding: 8px 12px; text-align: center;">Grupa pracownicza</th>
+                            <th style="padding: 8px 12px; text-align: center;">średnia</th>
+                            <th style="padding: 8px 12px; text-align: center;">odch. Stand.</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; font-weight: bold;">Kierowcy</td>
+                            <td style="padding: 8px 12px; text-align: center;">340,6</td>
+                            <td style="padding: 8px 12px; text-align: center;">9,145735055</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; font-weight: bold;">Stacja Obsługi i Zapl. Techn.</td>
+                            <td style="padding: 8px 12px; text-align: center;">129,6</td>
+                            <td style="padding: 8px 12px; text-align: center;">1,104090192</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; font-weight: bold;">Stanowiska nierobotnicze</td>
+                            <td style="padding: 8px 12px; text-align: center;">54,5</td>
+                            <td style="padding: 8px 12px; text-align: center;">0,935981093</td>
+                        </tr>
+                        <tr style="background-color: #4CAF50; color: white;">
+                            <td style="padding: 8px 12px; text-align: left; font-weight: bold;">OGÓŁEM</td>
+                            <td style="padding: 8px 12px; text-align: center; font-weight: bold;">524,7</td>
+                            <td style="padding: 8px 12px; text-align: center; font-weight: bold;">9,831473887</td>
+                        </tr>
+                    </table>
+                    <table style="font-size: 0.55em; border-collapse: collapse;">
+                        <tr style="background-color: #7c3aed; color: white;">
+                            <th style="padding: 8px 12px; text-align: center;">Wyszczególnienie</th>
+                            <th style="padding: 8px 12px; text-align: center;">Kwota (zł)</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; font-weight: bold;">Ogółem</td>
+                            <td style="padding: 8px 12px; text-align: center;">6732,22</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; white-space: nowrap;">na stanowiskach nierobotniczych</td>
+                            <td style="padding: 8px 12px; text-align: center;">7146,95</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; white-space: nowrap;">na stanowiskach robotniczych</td>
+                            <td style="padding: 8px 12px; text-align: center;">6684,17</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; padding-left: 30px;">- w tym: kierowcy</td>
+                            <td style="padding: 8px 12px; text-align: center;">7000,08</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; text-align: left; padding-left: 30px;">- w tym: pozostali SO+ZT</td>
+                            <td style="padding: 8px 12px; text-align: center;">5854,27</td>
+                        </tr>
+                    </table>
+                    </div>
+                </section>
+
+                <section data-number="3.2">
+                    <h2>Koszty paliwa</h2>
+                    <p style="font-size: 0.6em; margin-top: -25px; text-align: center;"><a href="https://www.autocentrum.pl/paliwa/ceny-paliw/swietokrzyskie/" target="_blank" style="color: #ccc;">https://www.autocentrum.pl/paliwa/ceny-paliw/swietokrzyskie/</a></p>
+                    <p style="font-size: 1.1em; margin: 35px 0 10px 0; text-align: center; color: #7c3aed;">Forecast sheet</p>
+                    <div style="position: relative; width: 100%; display: flex; justify-content: center; padding: 10px 0;">
+                        <div style="position: absolute; top: 5px; left: 50px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; top: 5px; right: 50px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; bottom: 5px; left: 50px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; bottom: 5px; right: 50px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                        <img src="plots/Forecast_sheet.png" style="max-width: 95%; max-height: 320px; margin: 15px auto 5px; display: block; border-radius: 10px;">
+                    </div>
+                </section>
+
+                <section data-number="3.2a">
+                    <h2>Zużycie paliwa</h2>
+                    <table style="margin: 30px auto; font-size: 0.65em; border-collapse: collapse;">
+                        <tr>
+                            <th style="padding: 12px 20px; text-align: left; border-bottom: 1px solid #555;">Rodzaje autobusów</th>
+                            <th colspan="2" style="padding: 12px 20px; text-align: center; border-bottom: 1px solid #555;">Silnik spalinowy</th>
+                            <th colspan="2" style="padding: 12px 20px; text-align: center; border-bottom: 1px solid #555;">Hybrydy</th>
+                        </tr>
+                        <tr>
+                            <th style="padding: 12px 20px; text-align: left;"></th>
+                            <th style="padding: 12px 20px; text-align: center;">kilometraż</th>
+                            <th style="padding: 12px 20px; text-align: center;">spalanie</th>
+                            <th style="padding: 12px 20px; text-align: center;">kilometraż</th>
+                            <th style="padding: 12px 20px; text-align: center;">spalanie</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px 20px; text-align: left; font-weight: bold;">MEGA</td>
+                            <td style="padding: 12px 20px; text-align: center; white-space: nowrap;">2209113 km</td>
+                            <td style="padding: 12px 20px; text-align: center;">45 - 55</td>
+                            <td style="padding: 12px 20px; text-align: center; white-space: nowrap;">539625 km</td>
+                            <td style="padding: 12px 20px; text-align: center;">31,5 - 38,5</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px 20px; text-align: left; font-weight: bold;">MAXI</td>
+                            <td style="padding: 12px 20px; text-align: center; white-space: nowrap;">6705081 km</td>
+                            <td style="padding: 12px 20px; text-align: center;">36 - 44</td>
+                            <td style="padding: 12px 20px; text-align: center; white-space: nowrap;">960693 km</td>
+                            <td style="padding: 12px 20px; text-align: center;">25,2 - 30,8</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px 20px; text-align: left; font-weight: bold;">MIDI</td>
+                            <td style="padding: 12px 20px; text-align: center; white-space: nowrap;">41320 km</td>
+                            <td style="padding: 12px 20px; text-align: center;">27 - 33</td>
+                            <td style="padding: 12px 20px; text-align: center;"></td>
+                            <td style="padding: 12px 20px; text-align: center;"></td>
+                        </tr>
+                        <tr style="border-top: 1px solid #555;">
+                            <td style="padding: 12px 20px; text-align: left; font-weight: bold;">RAZEM</td>
+                            <td style="padding: 12px 20px; text-align: center; font-weight: bold; white-space: nowrap;">8955514 km</td>
+                            <td style="padding: 12px 20px; text-align: center;"></td>
+                            <td style="padding: 12px 20px; text-align: center; font-weight: bold; white-space: nowrap;">1500318 km</td>
+                            <td style="padding: 12px 20px; text-align: center;"></td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section data-number="3.3">
+                    <h2>Koszty utrzymania autobusów</h2>
+                    <ul style="font-size: 0.9em; margin-top: 30px; text-align: left; display: inline-block;">
+                        <li style="margin-bottom: 15px;">Tabor MPK Kielce wynosi <span style="color: #7c3aed;">140 autobusów</span></li>
+                        <li style="margin-bottom: 15px;">Roczne przeglądy każdego autobusu to koszt <span style="color: #7c3aed;">40 tys. zł</span></li>
+                        <li style="margin-bottom: 15px;">Autobusy mają określoną awaryjność i rocznie wymagają <span style="color: #7c3aed;">od 1 do 10 napraw</span></li>
+                        <li>Koszty każdej naprawy są <span style="color: #7c3aed;">różne</span></li>
+                    </ul>
+                </section>
+
+                <section data-number="3.4">
+                    <h2>Przychody z biletów</h2>
+                    <table style="margin: 30px auto; font-size: 0.60em; border-collapse: collapse;">
+                        <tr style="background-color: #7c3aed; color: white;">
+                            <th style="padding: 10px 15px; text-align: center;"></th>
+                            <th style="padding: 10px 15px; text-align: center;">jednorazowy</th>
+                            <th style="padding: 10px 15px; text-align: center;">dobowy</th>
+                            <th style="padding: 10px 15px; text-align: center;">miesięczny</th>
+                            <th style="padding: 10px 15px; text-align: center;">karnet</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: left; font-weight: bold;">ulgowy 1</td>
+                            <td style="padding: 10px 15px; text-align: center;">2,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">7,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">60,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">199,00 zł</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: left; font-weight: bold;">ulgowy 1+2</td>
+                            <td style="padding: 10px 15px; text-align: center;">2,50 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">8,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">65,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">219,00 zł</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: left; font-weight: bold;">normalny 1</td>
+                            <td style="padding: 10px 15px; text-align: center;">4,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">14,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">115,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">-</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: left; font-weight: bold;">normalny 1+2</td>
+                            <td style="padding: 10px 15px; text-align: center;">5,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">16,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">125,00 zł</td>
+                            <td style="padding: 10px 15px; text-align: center;">-</td>
+                        </tr>
+                    </table>
+                    <table style="margin: 30px auto; font-size: 0.60em; border-collapse: collapse;">
+                        <tr style="background-color: #9C27B0; color: white;">
+                            <th style="padding: 10px 15px; text-align: center;"></th>
+                            <th style="padding: 10px 15px; text-align: center;">jednorazowy</th>
+                            <th style="padding: 10px 15px; text-align: center;">dobowy</th>
+                            <th style="padding: 10px 15px; text-align: center;">miesięczny</th>
+                            <th style="padding: 10px 15px; text-align: center;">karnet</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: center; font-weight: bold;">ulgowy 1</td>
+                            <td style="padding: 10px 15px; text-align: center;">3 750 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">20 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">105 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">17 500</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: center; font-weight: bold;">ulgowy 1+2</td>
+                            <td style="padding: 10px 15px; text-align: center;">200 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">1 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">5 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">1 250</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: center; font-weight: bold;">normalny 1</td>
+                            <td style="padding: 10px 15px; text-align: center;">4 600 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">37 500</td>
+                            <td style="padding: 10px 15px; text-align: center;">140 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">-</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 15px; text-align: center; font-weight: bold;">normalny 1+2</td>
+                            <td style="padding: 10px 15px; text-align: center;">300 000</td>
+                            <td style="padding: 10px 15px; text-align: center;">2 500</td>
+                            <td style="padding: 10px 15px; text-align: center;">12 500</td>
+                            <td style="padding: 10px 15px; text-align: center;">-</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section data-number="3.5">
+                    <h2>Dofinansowanie miasta</h2>
+                    <div style="display: flex; gap: 30px; justify-content: center; align-items: center; margin-top: 80px;">
+                        <div style="flex: 1; max-width: 300px; font-size: 1.1em; text-align: center; word-wrap: break-word;">Roczne przychody z biletów</div>
+                        <div style="font-size: 2em; font-weight: bold; color: #7c3aed;">=</div>
+                        <div style="flex: 1; max-width: 300px; font-size: 1.1em; text-align: center; word-wrap: break-word;">kwota dofinansowania miasta</div>
+                    </div>
+                </section>
+
+                <section data-number="3.6">
+                    <div style="width: 100%; height: 600px; display: flex; justify-content: center; align-items: center;">
+                        <iframe src="https://docs.google.com/spreadsheets/d/1aiEya0cMNtb2qTvxNbiorX6VBNSx1-lU/edit?usp=sharing&ouid=103662487322499094191&rtpof=true&sd=true" width="100%" height="600px" frameborder="0" allow="autoplay"></iframe>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Slide 4 -->
+            <section>
+                <section data-number="4.0">
+                    <div style="position: absolute; top: -10px; left: 40px; width: 620px; height: 3px; background-color: #7c3aed;"></div>
+                    <div style="position: absolute; top: 20px; right: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <div style="position: absolute; bottom: 40px; left: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <h2>Wyniki finansowe symulacji</h2>
+                </section>
+
+                <section data-number="4.1">
+                    <h2>Część przychodowa</h2>
+                    <table style="margin: 30px auto; margin-left: -135px; font-size: 0.9em; border-collapse: collapse;">
+                        <tr>
+                            <th style="padding: 8px 20px; text-align: left;"></th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">Przychody biletów</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">Dofinansowanie miasta</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap; background-color: #90EE90;">Przychody razem</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left;">średnia</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">56 483 844,47 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">56 483 844,47 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #90EE90;">112 967 688,95 zł</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left;">max</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">64 236 648,50 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">64 236 648,50 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #90EE90;">128 473 297,00 zł</td>
+                        </tr>
+                        <tr style="border-top: 1px solid #555;">
+                            <td style="padding: 8px 20px; text-align: left;">min</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">49 527 637,50 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">49 527 637,50 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #90EE90;">99 055 275,00 zł</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section data-number="4.2">
+                    <h2>Część kosztowa</h2>
+                    <table style="margin: 30px auto; margin-left: -135px; font-size: 0.6em; border-collapse: collapse;">
+                        <tr>
+                            <th style="padding: 8px 20px; text-align: left;"></th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">Koszty paliwa</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">Koszty pracowników</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">Koszty napraw</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap;">Inne koszty</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap; background-color: #8B4545;">Koszty razem</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left;">średnia</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">24 304 100,02 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">42 713 548,33 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">27 247 600,37 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">15 000 000,00 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #8B4545;">109 265 248,72 zł</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left;">max</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">26 587 473,28 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">45 219 884,08 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">31 751 612,47 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">15 000 000,00 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #8B4545;">114 922 956,36 zł</td>
+                        </tr>
+                        <tr style="border-top: 1px solid #555;">
+                            <td style="padding: 8px 20px; text-align: left;">min</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">22 030 232,24 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">40 559 357,00 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">23 150 981,93 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle;">15 000 000,00 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #8B4545;">103 822 695,07 zł</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section data-number="4.3">
+                    <h2>Wynik finansowy</h2>
+                    <table style="margin: 30px auto; margin-left: -70px; font-size: 0.9em; border-collapse: collapse;">
+                        <tr>
+                            <th style="padding: 8px 20px; text-align: left;"></th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap; background-color: #90EE90;">Przychody razem</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap; background-color: #8B4545;">Koszty razem</th>
+                            <th style="padding: 8px 20px; text-align: right; white-space: nowrap; background-color: #C9B35E;">Wynik</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left;">średnia</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #90EE90;">113 315 456,31 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #8B4545;">109 251 174,79 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #C9B35E;">4 064 281,51 zł</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 20px; text-align: left;">max</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #90EE90;">133 879 277,00 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #8B4545;">115 487 024,75 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #C9B35E;">26 711 876,41 zł</td>
+                        </tr>
+                        <tr style="border-top: 1px solid #555;">
+                            <td style="padding: 8px 20px; text-align: left;">min</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #90EE90;">97 076 594,00 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #8B4545;">103 061 441,83 zł</td>
+                            <td style="padding: 8px 20px; text-align: right; white-space: nowrap; vertical-align: middle; background-color: #C9B35E;">-12 814 454,06 zł</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section data-number="4.4">
+                    <h2>Częstość wyniku</h2>
+                    <ul style="font-size: 0.4em; margin-top: 20px; margin-bottom: 20px; text-align: left; display: inline-block;">
+                        <li style="margin-bottom: 10px;">Finalne wyniki osiągnięte zostały metodą Monte Carlo, gdzie wynik symulowany był 500 razy</li>
+                        <li style="margin-bottom: 10px;">W każdej iteracji losowane były inne liczby zarówno w pozycji przychodów jak i kosztów</li>
+                        <li>Informacje o rozkładzie wyników pozwalają zobrazować oczekiwaną wartość i odchylenie standardowe</li>
+                    </ul>
+                    <div style="position: relative; width: 100%; display: flex; justify-content: center; padding: 30px 0;">
+                        <div style="position: absolute; top: 20px; left: 50px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; top: 20px; right: 50px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; bottom: 20px; left: 50px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                        <div style="position: absolute; bottom: 20px; right: 50px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                        <img src="plots/wykres_czestosci_wyniku.png" style="max-width: 95%; max-height: 400px; display: block; border-radius: 10px;">
+                    </div>
+                </section>
+
+                <section data-number="4.5">
+                    <div style="position: absolute; left: 0; top: 0; width: 8px; height: 100%; background-color: #7c3aed;"></div>
+                    <h2>WYNIKI DLA DWÓCH STRATEGII</h2>
+                    <p style="font-size: 0.8em; margin: 20px 40px; line-height: 1.6;">Poniższe wykresy uzyskane zostały w analogiczny sposób, przy symulacji generującej dane dla każdego z nich zmieniony został jedynie średni poziom cen wszystkich biletów w ofercie MPK Kielce</p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 40px; gap: 60px; margin-top: 10px;">
+                        <div style="flex: 1; text-align: center;">
+                            <p style="font-size: 0.9em; margin-bottom: 15px;">Podwyższenie cen</p>
+                            <div style="position: relative; width: 100%; display: flex; justify-content: center;">
+                                <div style="position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                                <div style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                                <div style="position: absolute; bottom: 10px; left: 10px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                                <div style="position: absolute; bottom: 10px; right: 10px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                                <img src="plots/podwyzszenie_cen.png" style="max-width: 100%; max-height: 480px; display: block; border-radius: 8px;">
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; text-align: center;">
+                            <p style="font-size: 0.9em; margin-bottom: 15px;">Obniżenie cen</p>
+                            <div style="position: relative; width: 100%; display: flex; justify-content: center;">
+                                <div style="position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                                <div style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-top: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                                <div style="position: absolute; bottom: 10px; left: 10px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-left: 5px solid #7c3aed;"></div>
+                                <div style="position: absolute; bottom: 10px; right: 10px; width: 30px; height: 30px; border-bottom: 5px solid #7c3aed; border-right: 5px solid #7c3aed;"></div>
+                                <img src="plots/obnizenie_cen.png" style="max-width: 100%; max-height: 480px; display: block; border-radius: 8px;">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Slide 5 -->
+            <section>
+                <section data-number="5.0">
+                    <div style="position: absolute; top: -10px; left: 40px; width: 620px; height: 3px; background-color: #7c3aed;"></div>
+                    <div style="position: absolute; top: -10px; right: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <div style="position: absolute; bottom: 40px; left: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <h2>Wrażliwość wyniku finansowego</h2>
+                    <h3 style="font-size: 0.9em;">na podstawie zmian czynników niezależnych</h3>
+                </section>
+
+                <section data-number="5.1">
+                    <h2>Analiza wrażliwości cen biletów</h2>
+                    <img src="plots/bazowa_cena_tabela.png" class="fragment" style="max-width: 90%; max-height: 380px; margin: 70px auto 5px; display: block; border-radius: 10px;">
+                    <img src="plots/wynik_finansowy_wg_cen_biletow.png" class="fragment" style="max-width: 90%; max-height: 385px; margin: 35px auto 10px; display: block; border-radius: 10px;">
+                </section>
+
+                <section data-number="5.2">
+                    <h2>Analiza dwuczynnikowa kosztów etatów i cen biletów</h2>
+                    <img src="plots/analiza_dwuczynnikowa.png" class="fragment" style="max-width: 95%; max-height: 500px; margin: 30px auto; display: block; border-radius: 10px;">
+                </section>
+
+                <section data-number="5.3">
+                    <h2>Wykresy wrażliwości tornado oraz spider</h2>
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
+                        <img src="plots/Spider.png" style="max-height: 385px; width: auto; border-radius: 10px;">
+                        <img src="plots/Tornado.png" style="max-height: 385px; width: auto; border-radius: 10px;">
+                    </div>
+                </section>
+            </section>
+
+            <!-- Slide 6 -->
+            <!-- Slide 5 - Regresja -->
+            <section>
+                <section data-number="5.0">
+                    <div style="position: absolute; top: -10px; left: 40px; width: 620px; height: 3px; background-color: #7c3aed;"></div>
+                    <div style="position: absolute; top: -10px; right: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <div style="position: absolute; bottom: 40px; left: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <h2>Regresja</h2>
+                </section>
+
+                <section data-number="5.1">
+                    <h3>Model teoretyczny</h3>
+                    <p style="font-size: 0.9em; margin-top: 40px; text-align: center; line-height: 1.8; color: #7c3aed;">
+                        <i>y</i> = β₀ + β₁(<i>Cena paliw</i>) + β₂(<i>Awaryjność</i>) + β₃(<i>Ceny biletów</i>) + β₄(<i>Wynagrodzenie pracowników</i>) + ε
+                    </p>
+                </section>
+
+                <section data-number="5.2">
+                    <h3>Równanie empiryczne</h3>
+                    <p style="font-size: 0.75em; margin-top: 40px; text-align: center; line-height: 1.8; color: #7c3aed;">
+                        ŷ = 17 939 831,77 - 2 954 939,241(<i>Cena paliw</i>) - 19 337 641,5(<i>Awaryjność</i>) + 39 597 014,11(<i>Ceny biletów</i>) - 26 773 569,65(<i>Wynagrodzenie pracowników</i>)
+                    </p>
+                </section>
+
+
+            </section>
+
+            <!-- Slide 6 - Rekomendacje -->
+            <section>
+                <section data-number="6.0">
+                    <div style="position: absolute; top: -10px; left: 40px; width: 620px; height: 3px; background-color: #7c3aed;"></div>
+                    <div style="position: absolute; top: -10px; right: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <div style="position: absolute; bottom: 40px; left: 40px; width: 15px; height: 15px; background-color: #fff;"></div>
+                    <h2>Rekomendacje</h2>
+                </section>
+
+                <section data-number="6.1">
+                    <h3>Strategia dla radnych prozyskowynch</h3>
+                    <ul style="font-size: 0.9em; margin-top: 30px; text-align: left; display: inline-block;">
+                        <li>Zwiększenie cen biletów o 30-40%</li>
+                        <li>Minimalizacja kosztów</li>
+                    </ul>
+                </section>
+
+                <section data-number="6.2">
+                    <h2>Scenariusze dla radnych prospolecznych</h2>
+                    <table style="margin: 30px auto; font-size: 0.65em; border-collapse: collapse; border: 2px solid #000;">
+                        <tr style="border-bottom: 3px solid #fff;">
+                            <th style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; font-weight: bold; font-size: 0.9em;">Scenariusz</th>
+                            <th style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; font-weight: bold; font-size: 0.9em;">Poziom awaryjności</th>
+                            <th style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; font-weight: bold; font-size: 0.9em;">Zmiana wzgl. wartości bazowej</th>
+                            <th style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; font-weight: bold; font-size: 0.9em;">Poziom wynagrodzeń pracowników</th>
+                            <th style="padding: 10px 12px; text-align: center; font-weight: bold; font-size: 0.9em;">Zmiana wzgl. wartości bazowej</th>
+                        </tr>
+                        <tr style="border-bottom: 2px solid #000;">
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #1E90FF; font-weight: bold;">I</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #1E90FF;">0,95</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #1E90FF;">(-5%)</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #1E90FF;">0,9157</td>
+                            <td style="padding: 10px 12px; text-align: center; color: #1E90FF;">(-8,4%)</td>
+                        </tr>
+                        <tr style="border-bottom: 2px solid #000;">
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FF0000; font-weight: bold;">II</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FF0000;">0,90</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FF0000;">(-10%)</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FF0000;">0,9518</td>
+                            <td style="padding: 10px 12px; text-align: center; color: #FF0000;">(-4,8%)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FFD700; font-weight: bold;">III</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FFD700;">0,85</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FFD700;">(-15%)</td>
+                            <td style="padding: 10px 12px; text-align: center; border-right: 2px solid #000; color: #FFD700;">0,9879</td>
+                            <td style="padding: 10px 12px; text-align: center; color: #FFD700;">(-1,2%)</td>
+                        </tr>
+                    </table>
+                </section>
+
+            </section>
+
+            <!-- Final Slide -->
+            <section>
+                <h2 style="margin-bottom: 10px;">Dziękujemy za uwagę</h2>
+                <div style="width: 600px; height: 6px; background-color: #7c3aed; margin: 0 auto 30px;"></div>
+                <div style="display: inline-block; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); margin: 20px auto; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/marekacper/SGH---spreadsheet-simulations" style="display: block; border-radius: 10px;">
+                </div>
+                <p style="font-size: 0.75em; color: #666; margin: 30px 0 60px 0;"><a href="https://github.com/marekacper/SGH---spreadsheet-simulations" target="_blank" style="color: #666;">github.com/marekacper/SGH---spreadsheet-simulations</a></p>
+                <div style="display: flex; gap: 80px; justify-content: center; margin-top: 40px;">
+                    <div style="text-align: center; flex: 1;">
+                        <p style="font-size: 1.2em; margin-bottom: 8px;">Józef Nanowski</p>
+                        <p style="font-size: 0.8em; color: #999;">jn130617@student.sgh.waw.pl</p>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <p style="font-size: 1.2em; margin-bottom: 8px;">Kacper Marek</p>
+                        <p style="font-size: 0.8em; color: #999;">km130178@student.sgh.waw.pl</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="slide-number" id="slide-number"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealHighlight, RevealNotes ],
+            slideNumber: false,
+            transition: 'slide',
+            backgroundTransition: 'fade'
+        });
+
+        // Custom slide numbering
+        function updateSlideNumber() {
+            const current = Reveal.getCurrentSlide();
+            const number = current.getAttribute('data-number');
+            const slideNumberEl = document.getElementById('slide-number');
+            if (number) {
+                slideNumberEl.textContent = number;
+            } else {
+                slideNumberEl.textContent = '';
+            }
+        }
+
+        Reveal.on('slidechanged', updateSlideNumber);
+        updateSlideNumber();
+    </script>
+</body>
+</html>
